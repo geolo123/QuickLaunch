@@ -41,14 +41,18 @@ public class GeoloApplication extends Application {
         return appInitListenerList;
     }
 
-    /** 设置初始化完成 */
-    public void setInitComplete() {
-        Log.e(TAG, "*** 设置初始化完成 setInitComplete   ***");
-        isInitComplete = true;
+    public void cleanAppInitializeListenerList() {
         if (appInitListenerList != null) {
             appInitListenerList.clear();
         }
         appInitListenerList = null;
+    }
+
+    /** 设置初始化完成 */
+    public void setInitComplete() {
+        Log.e(TAG, "*** 设置初始化完成 setInitComplete   ***");
+        isInitStart = false;
+        isInitComplete = true;
     }
 
     /** 获取初始化是否完成 */

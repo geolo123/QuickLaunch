@@ -11,11 +11,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.geolo.demo.launch.BaseActivity"
-                    android:theme="@style/SplashTheme">
+        <activity android:name="com.geolo.demo.launch.MainActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.geolo.demo.launch.ImageActivity" android:screenOrientation="portrait">
+            <intent-filter android:icon="@mipmap/ic_launcher">
+                <action android:name="android.intent.action.EDIT" />
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="com.commsource.beautyplus.intent.action.EDIT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
 

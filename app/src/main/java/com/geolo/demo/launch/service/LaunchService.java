@@ -43,6 +43,8 @@ public class LaunchService extends IntentService {
                 Application application = getApplication();
                 if (application != null && application instanceof GeoloApplication) {
                     GeoloApplication geoloApplication = (GeoloApplication) application;
+                    geoloApplication.setInitComplete();
+                    // /////////////////////////////////////////////////////////
                     List<WeakReference<OnAppInitializeListener>> appInitListenerList =
                         geoloApplication.getAppInitializeListenerList();
                     if (appInitListenerList != null && !appInitListenerList.isEmpty()) {
@@ -55,7 +57,8 @@ public class LaunchService extends IntentService {
                             }
                         }
                     }
-                    geoloApplication.setInitComplete();
+                    // /////////////////////////////////////////////
+                    geoloApplication.cleanAppInitializeListenerList();
                 }
             }
         }
