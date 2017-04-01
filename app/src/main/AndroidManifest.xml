@@ -19,7 +19,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.geolo.demo.launch.ImageActivity" android:screenOrientation="portrait">
+        <activity android:name="com.geolo.demo.launch.ImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
             <intent-filter android:icon="@mipmap/ic_launcher">
                 <action android:name="android.intent.action.EDIT" />
                 <action android:name="android.intent.action.SEND" />
