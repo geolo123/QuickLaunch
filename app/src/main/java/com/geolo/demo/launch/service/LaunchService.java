@@ -1,10 +1,17 @@
 package com.geolo.demo.launch.service;
 
+import android.app.Application;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.geolo.demo.launch.GeoloApplication;
+import com.geolo.demo.launch.listener.OnAppInitializeListener;
+
+import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * @author Created by jwb on 2017/3/31.
@@ -33,6 +40,23 @@ public class LaunchService extends IntentService {
             final String action = intent.getAction();
             if (ACTION_INIT_WHEN_APP_CREATE.equals(action)) {
                 performInit();
+                Application application = getApplication();
+                if (application != null && application instanceof GeoloApplication) {
+                    GeoloApplication geoloApplication = (GeoloApplication) application;
+                    List<WeakReference<OnAppInitializeListener>> appInitListenerList =
+                        geoloApplication.getAppInitializeListenerList();
+                    if (appInitListenerList != null && !appInitListenerList.isEmpty()) {
+                        for (WeakReference<OnAppInitializeListener> listenerWeakReference : appInitListenerList) {
+                            if (listenerWeakReference != null) {
+                                OnAppInitializeListener listener = listenerWeakReference.get();
+                                if (listener != null) {
+                                    listener.OnInitComplete();
+                                }
+                            }
+                        }
+                    }
+                    geoloApplication.setInitComplete();
+                }
             }
         }
     }

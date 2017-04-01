@@ -5,8 +5,13 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.util.Log;
 
+import com.geolo.demo.launch.listener.OnAppInitializeListener;
 import com.geolo.demo.launch.service.LaunchService;
 import com.geolo.demo.launch.utils.AppTools;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <pre>
@@ -19,6 +24,37 @@ import com.geolo.demo.launch.utils.AppTools;
  */
 public class GeoloApplication extends Application {
     private static final String TAG = "GeoloApplication";
+    /** 是否初始化开始 */
+    private boolean isInitStart = false;
+    /** 是否初始化完成 */
+    private boolean isInitComplete = false;
+    /** 初始化的监听事件，不做remove处理，不可能新增非常多的监听的，监听完成后清空此对象 */
+    private List<WeakReference<OnAppInitializeListener>> appInitListenerList = new ArrayList<>();
+
+    public void addAppInitializeListener(OnAppInitializeListener listener) {
+        if (isInitStart && appInitListenerList != null && listener != null) {
+            appInitListenerList.add(new WeakReference<>(listener));
+        }
+    }
+
+    public List<WeakReference<OnAppInitializeListener>> getAppInitializeListenerList() {
+        return appInitListenerList;
+    }
+
+    /** 设置初始化完成 */
+    public void setInitComplete() {
+        Log.e(TAG, "*** 设置初始化完成 setInitComplete   ***");
+        isInitComplete = true;
+        if (appInitListenerList != null) {
+            appInitListenerList.clear();
+        }
+        appInitListenerList = null;
+    }
+
+    /** 获取初始化是否完成 */
+    public boolean getInitComplete() {
+        return isInitComplete;
+    }
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -39,10 +75,12 @@ public class GeoloApplication extends Application {
         int pid = android.os.Process.myPid();
         String processAppName = AppTools.getAppName(this, pid);
         if (processAppName == null || getBaseContext() == null || !processAppName.equalsIgnoreCase(getPackageName())) {
-            Log.e("Geolo", "*** onCreate() 远程的Service初始化 ***");
+            Log.e(TAG, "*** onCreate() 远程的Service初始化 ***");
             return;// 如果app启用了远程的service，此application:onCreate会被调用2次
         }
-        Log.e("Geolo", "*** onCreate() local的Service初始化 ***");
+        Log.e(TAG, "*** onCreate() local的Service初始化 ***");
+        isInitStart = true;
+        isInitComplete = false;
         LaunchService.start(this);
 
         Log.v(TAG, "*** onCreate() end ***");
