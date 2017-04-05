@@ -1,8 +1,10 @@
 package com.geolo.demo.launch;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.geolo.demo.launch.listener.OnAppInitializeListener;
@@ -86,7 +88,7 @@ public class GeoloApplication extends Application {
         isInitStart = true;
         isInitComplete = false;
         LaunchService.start(this);
-
+        onRegisterActivityLifecycleCallbacks();
         Log.v(TAG, "*** onCreate() end ***");
     }
 
@@ -128,4 +130,43 @@ public class GeoloApplication extends Application {
         super.unregisterActivityLifecycleCallbacks(callback);
     }
 
+    private void onRegisterActivityLifecycleCallbacks() {
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                unregisterActivityLifecycleCallbacks(this);// 避免重复的初始化
+                Log.e(TAG, "*** ActivityLifecycleCallbacks onActivityCreated() ***");
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+                Log.e(TAG, "*** ActivityLifecycleCallbacks onActivityStarted() ***");
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                Log.e(TAG, "*** ActivityLifecycleCallbacks onActivityResumed() ***");
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+                Log.e(TAG, "*** ActivityLifecycleCallbacks onActivityPaused() ***");
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+                Log.e(TAG, "*** ActivityLifecycleCallbacks onActivityStopped() ***");
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+                Log.e(TAG, "*** ActivityLifecycleCallbacks onActivitySaveInstanceState() ***");
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                Log.e(TAG, "*** ActivityLifecycleCallbacks onActivityDestroyed() ***");
+            }
+        });
+    }
 }
